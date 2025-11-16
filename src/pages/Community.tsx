@@ -411,38 +411,39 @@ const Community = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-pulse">Cargando comunidad...</div>
+      <div className="flex items-center justify-center p-6 sm:p-8 min-h-[400px]">
+        <div className="animate-pulse text-sm sm:text-base">Cargando comunidad...</div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-6 space-y-6">
+    <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Comunidad</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold">Comunidad</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Comparte experiencias, curiosidades y conecta con otros
             emprendedores
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="gap-2">
+            <Button className="gap-2 w-full sm:w-auto text-sm sm:text-base">
               <Plus className="h-4 w-4" />
-              Nuevo Post
+              <span className="hidden sm:inline">Nuevo Post</span>
+              <span className="sm:hidden">Nuevo</span>
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px]">
+          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Crear Nuevo Post</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="text-lg sm:text-xl">Crear Nuevo Post</DialogTitle>
+              <DialogDescription className="text-xs sm:text-sm">
                 Comparte tu experiencia, curiosidad o pregunta con la comunidad
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4 py-4">
+            <div className="grid gap-3 sm:gap-4 py-2 sm:py-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Categoría</label>
                 <Select
@@ -483,56 +484,69 @@ const Community = () => {
                 />
               </div>
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+            <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
+              <Button 
+                variant="outline" 
+                onClick={() => setIsDialogOpen(false)}
+                className="w-full sm:w-auto"
+              >
                 Cancelar
               </Button>
-              <Button onClick={handleCreatePost}>Publicar</Button>
+              <Button 
+                onClick={handleCreatePost}
+                className="w-full sm:w-auto"
+              >
+                Publicar
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
 
       {/* Filtros */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-2 -mx-3 sm:mx-0 px-3 sm:px-0">
         <Button
           variant={selectedCategory === "all" ? "default" : "outline"}
           onClick={() => setSelectedCategory("all")}
+          className="text-xs sm:text-sm whitespace-nowrap flex-shrink-0"
         >
           Todos
         </Button>
         <Button
           variant={selectedCategory === "experiencia" ? "default" : "outline"}
           onClick={() => setSelectedCategory("experiencia")}
-          className="gap-2"
+          className="gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap flex-shrink-0"
         >
-          <TrendingUp className="h-4 w-4" />
-          Experiencias
+          <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <span className="hidden sm:inline">Experiencias</span>
+          <span className="sm:hidden">Exp.</span>
         </Button>
         <Button
           variant={selectedCategory === "curiosidad" ? "default" : "outline"}
           onClick={() => setSelectedCategory("curiosidad")}
-          className="gap-2"
+          className="gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap flex-shrink-0"
         >
-          <Lightbulb className="h-4 w-4" />
-          Curiosidades
+          <Lightbulb className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <span className="hidden sm:inline">Curiosidades</span>
+          <span className="sm:hidden">Cur.</span>
         </Button>
         <Button
           variant={selectedCategory === "pregunta" ? "default" : "outline"}
           onClick={() => setSelectedCategory("pregunta")}
-          className="gap-2"
+          className="gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap flex-shrink-0"
         >
-          <HelpCircle className="h-4 w-4" />
-          Preguntas
+          <HelpCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <span className="hidden sm:inline">Preguntas</span>
+          <span className="sm:hidden">Preg.</span>
         </Button>
       </div>
 
       {/* Lista de Posts */}
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {filteredPosts.length === 0 ? (
           <Card>
-            <CardContent className="py-12 text-center">
-              <p className="text-muted-foreground">
+            <CardContent className="py-8 sm:py-12 text-center">
+              <p className="text-sm sm:text-base text-muted-foreground">
                 No hay posts aún. ¡Sé el primero en compartir!
               </p>
             </CardContent>
@@ -540,44 +554,44 @@ const Community = () => {
         ) : (
           filteredPosts.map((post) => (
             <Card key={post.id}>
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <Avatar>
+              <CardHeader className="p-4 sm:p-6">
+                <div className="flex items-start justify-between gap-2 sm:gap-0">
+                  <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                    <Avatar className="h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0">
                       <AvatarImage src={post.user_avatar} />
                       <AvatarFallback>
                         {post.user_name?.charAt(0) || "U"}
                       </AvatarFallback>
                     </Avatar>
-                    <div>
-                      <p className="font-semibold">{post.user_name}</p>
-                      <p className="text-sm text-muted-foreground">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold text-sm sm:text-base truncate">{post.user_name}</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">
                         {formatDate(post.created_at)}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm">
-                    {getCategoryIcon(post.category)}
-                    <span>{getCategoryLabel(post.category)}</span>
+                  <div className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 rounded-full bg-primary/10 text-primary text-xs sm:text-sm flex-shrink-0">
+                    <span className="hidden sm:inline">{getCategoryIcon(post.category)}</span>
+                    <span className="truncate max-w-[60px] sm:max-w-none">{getCategoryLabel(post.category)}</span>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
-                <h3 className="text-xl font-bold mb-2">{post.title}</h3>
-                <p className="text-muted-foreground whitespace-pre-wrap mb-4">
+              <CardContent className="p-4 sm:p-6 pt-0">
+                <h3 className="text-lg sm:text-xl font-bold mb-2">{post.title}</h3>
+                <p className="text-sm sm:text-base text-muted-foreground whitespace-pre-wrap mb-3 sm:mb-4 break-words">
                   {post.content}
                 </p>
 
                 {/* Acciones */}
-                <div className="flex items-center gap-4 pt-4 border-t">
+                <div className="flex items-center gap-2 sm:gap-4 pt-3 sm:pt-4 border-t">
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="gap-2"
+                    className="gap-1.5 sm:gap-2 text-xs sm:text-sm h-8 sm:h-9"
                     onClick={() => handleToggleLike(post.id)}
                   >
                     <Heart
-                      className={`h-4 w-4 ${
+                      className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${
                         post.user_liked ? "fill-red-500 text-red-500" : ""
                       }`}
                     />
@@ -586,32 +600,32 @@ const Community = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="gap-2"
+                    className="gap-1.5 sm:gap-2 text-xs sm:text-sm h-8 sm:h-9"
                     onClick={() => handleToggleComments(post.id)}
                   >
-                    <MessageCircle className="h-4 w-4" />
+                    <MessageCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     <span>{post.comments_count}</span>
                   </Button>
                 </div>
 
                 {/* Comentarios */}
                 {expandedPost === post.id && (
-                  <div className="mt-4 pt-4 border-t space-y-4">
+                  <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t space-y-3 sm:space-y-4">
                     {/* Lista de comentarios */}
                     {postComments[post.id]?.map((comment) => (
-                      <div key={comment.id} className="flex gap-3">
-                        <Avatar className="h-8 w-8">
+                      <div key={comment.id} className="flex gap-2 sm:gap-3">
+                        <Avatar className="h-7 w-7 sm:h-8 sm:w-8 flex-shrink-0">
                           <AvatarImage src={comment.user_avatar} />
                           <AvatarFallback>
                             {comment.user_name?.charAt(0) || "U"}
                           </AvatarFallback>
                         </Avatar>
-                        <div className="flex-1">
-                          <div className="bg-muted rounded-lg p-3">
-                            <p className="font-semibold text-sm mb-1">
+                        <div className="flex-1 min-w-0">
+                          <div className="bg-muted rounded-lg p-2.5 sm:p-3">
+                            <p className="font-semibold text-xs sm:text-sm mb-1 truncate">
                               {comment.user_name}
                             </p>
-                            <p className="text-sm">{comment.content}</p>
+                            <p className="text-xs sm:text-sm break-words">{comment.content}</p>
                           </div>
                           <p className="text-xs text-muted-foreground mt-1">
                             {formatDate(comment.created_at)}
@@ -622,13 +636,13 @@ const Community = () => {
 
                     {/* Input para nuevo comentario */}
                     <div className="flex gap-2">
-                      <Avatar className="h-8 w-8">
+                      <Avatar className="h-7 w-7 sm:h-8 sm:w-8 flex-shrink-0">
                         <AvatarImage
                           src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${userId}`}
                         />
                         <AvatarFallback>{userName.charAt(0)}</AvatarFallback>
                       </Avatar>
-                      <div className="flex-1 flex gap-2">
+                      <div className="flex-1 flex gap-1.5 sm:gap-2">
                         <Input
                           placeholder="Escribe un comentario..."
                           value={newComment[post.id] || ""}
@@ -643,10 +657,12 @@ const Community = () => {
                               handleAddComment(post.id);
                             }
                           }}
+                          className="h-8 sm:h-10 text-xs sm:text-sm"
                         />
                         <Button
                           size="sm"
                           onClick={() => handleAddComment(post.id)}
+                          className="h-8 sm:h-9 text-xs sm:text-sm px-3 sm:px-4"
                         >
                           Enviar
                         </Button>

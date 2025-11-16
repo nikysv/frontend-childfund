@@ -30,6 +30,7 @@ import {
   GraduationCap,
   Trophy,
   Calendar,
+  Award,
 } from "lucide-react";
 
 interface Profile {
@@ -151,6 +152,11 @@ const AppLayout = () => {
       title: "Logros",
       icon: Trophy,
       path: "/achievements",
+    },
+    {
+      title: "Certificados",
+      icon: Award,
+      path: "/certifications",
     },
   ];
 

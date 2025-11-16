@@ -382,38 +382,39 @@ const Business = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-pulse">Cargando datos financieros...</div>
+      <div className="flex items-center justify-center p-6 sm:p-8 min-h-[400px]">
+        <div className="animate-pulse text-sm sm:text-base">Cargando datos financieros...</div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-6 space-y-6">
+    <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Mi Negocio</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold">Mi Negocio</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Gestión financiera y análisis de ventas
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="gap-2">
+            <Button className="gap-2 w-full sm:w-auto text-sm sm:text-base">
               <DollarSign className="h-4 w-4" />
-              Registrar Transacción
+              <span className="hidden sm:inline">Registrar Transacción</span>
+              <span className="sm:hidden">Nueva Transacción</span>
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[500px]">
+          <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Registrar Transacción</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="text-lg sm:text-xl">Registrar Transacción</DialogTitle>
+              <DialogDescription className="text-xs sm:text-sm">
                 Registra tus ingresos y egresos para llevar control de tu
                 negocio
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4 py-4">
+            <div className="grid gap-3 sm:gap-4 py-2 sm:py-4">
               {/* Tipo de Transacción */}
               <div className="space-y-2">
                 <Label>Tipo de Transacción</Label>
@@ -545,11 +546,18 @@ const Business = () => {
                 />
               </div>
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+            <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
+              <Button 
+                variant="outline" 
+                onClick={() => setIsDialogOpen(false)}
+                className="w-full sm:w-auto"
+              >
                 Cancelar
               </Button>
-              <Button onClick={handleSubmitTransaction}>
+              <Button 
+                onClick={handleSubmitTransaction}
+                className="w-full sm:w-auto"
+              >
                 Guardar Transacción
               </Button>
             </DialogFooter>
@@ -558,93 +566,93 @@ const Business = () => {
       </div>
 
       {/* Métricas Rápidas */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-6">
+            <CardTitle className="text-xs sm:text-sm font-medium">
               Ventas Totales
             </CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <DollarSign className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
+          <CardContent className="p-3 sm:p-6 pt-0">
+            <div className="text-lg sm:text-2xl font-bold">
               Bs. {totalVentasActuales.toLocaleString()}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground mt-1">
               {period === "week" ? "Esta semana" : "Este mes"}
             </p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Crecimiento</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-6">
+            <CardTitle className="text-xs sm:text-sm font-medium">Crecimiento</CardTitle>
             {crecimiento >= 0 ? (
-              <TrendingUp className="h-4 w-4 text-green-600" />
+              <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-green-600" />
             ) : (
-              <TrendingDown className="h-4 w-4 text-red-600" />
+              <TrendingDown className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-red-600" />
             )}
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-3 sm:p-6 pt-0">
             <div
-              className={`text-2xl font-bold ${
+              className={`text-lg sm:text-2xl font-bold ${
                 crecimiento >= 0 ? "text-green-600" : "text-red-600"
               }`}
             >
               {crecimiento >= 0 ? "+" : ""}
               {crecimiento.toFixed(1)}%
             </div>
-            <p className="text-xs text-muted-foreground">vs. año anterior</p>
+            <p className="text-xs text-muted-foreground mt-1">vs. año anterior</p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-6">
+            <CardTitle className="text-xs sm:text-sm font-medium">
               Promedio Diario
             </CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
+          <CardContent className="p-3 sm:p-6 pt-0">
+            <div className="text-lg sm:text-2xl font-bold">
               Bs. {Math.round(promedioVentas).toLocaleString()}
             </div>
-            <p className="text-xs text-muted-foreground">Por día</p>
+            <p className="text-xs text-muted-foreground mt-1">Por día</p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Año Anterior</CardTitle>
-            <ArrowDownRight className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-6">
+            <CardTitle className="text-xs sm:text-sm font-medium">Año Anterior</CardTitle>
+            <ArrowDownRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
+          <CardContent className="p-3 sm:p-6 pt-0">
+            <div className="text-lg sm:text-2xl font-bold">
               Bs. {totalVentasAñoAnterior.toLocaleString()}
             </div>
-            <p className="text-xs text-muted-foreground">Mismo período</p>
+            <p className="text-xs text-muted-foreground mt-1">Mismo período</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Gráfico de Ventas */}
       <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>
+        <CardHeader className="p-4 sm:p-6">
+          <div className="flex flex-col gap-3 sm:gap-0 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex-1 min-w-0">
+              <CardTitle className="text-base sm:text-lg mb-1 sm:mb-0">
                 Total Ventas vs Ventas del Año Anterior por{" "}
                 {period === "week" ? "Día" : "Mes"}
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-xs sm:text-sm">
                 Comparación de ventas actuales con el año anterior
               </CardDescription>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
               {/* Filtro de Mes (solo visible cuando period es "month") */}
               {period === "month" && (
                 <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger className="w-full sm:w-[180px] text-sm">
                     <SelectValue placeholder="Seleccionar mes" />
                   </SelectTrigger>
                   <SelectContent>
@@ -668,17 +676,19 @@ const Business = () => {
               <Tabs
                 value={period}
                 onValueChange={(value) => setPeriod(value as "week" | "month")}
+                className="w-full sm:w-auto"
               >
-                <TabsList>
-                  <TabsTrigger value="week">Semana</TabsTrigger>
-                  <TabsTrigger value="month">Mes</TabsTrigger>
+                <TabsList className="w-full sm:w-auto">
+                  <TabsTrigger value="week" className="flex-1 sm:flex-none text-xs sm:text-sm">Semana</TabsTrigger>
+                  <TabsTrigger value="month" className="flex-1 sm:flex-none text-xs sm:text-sm">Mes</TabsTrigger>
                 </TabsList>
               </Tabs>
             </div>
           </div>
         </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={400}>
+        <CardContent className="p-3 sm:p-6">
+          <div className="w-full h-[300px] sm:h-[400px]">
+            <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               data={salesData}
               margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
@@ -729,99 +739,149 @@ const Business = () => {
               />
             </AreaChart>
           </ResponsiveContainer>
+          </div>
         </CardContent>
       </Card>
 
       {/* Tabla de Transacciones Recientes */}
       <Card>
-        <CardHeader>
-          <CardTitle>Transacciones Recientes</CardTitle>
-          <CardDescription>
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-lg sm:text-xl">Transacciones Recientes</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
             Historial de tus últimas transacciones
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-3 sm:p-6 pt-0">
           {transactions.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              <p>No hay transacciones registradas</p>
-              <p className="text-sm mt-2">
+            <div className="text-center py-6 sm:py-8 text-muted-foreground">
+              <p className="text-sm sm:text-base">No hay transacciones registradas</p>
+              <p className="text-xs sm:text-sm mt-2">
                 Comienza registrando tu primera transacción
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">
-                      Tipo
-                    </th>
-                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">
-                      Descripción
-                    </th>
-                    <th className="text-left py-3 px-4 font-medium text-muted-foreground">
-                      Fecha
-                    </th>
-                    <th className="text-right py-3 px-4 font-medium text-muted-foreground">
-                      Monto
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {transactions.slice(0, 10).map((transaction) => (
-                    <tr key={transaction.id} className="border-b last:border-0">
-                      <td className="py-4 px-4">
-                        <span
-                          className={`font-medium ${
-                            transaction.type === "ingreso"
-                              ? "text-green-600"
-                              : "text-red-600"
-                          }`}
-                        >
-                          {transaction.type === "ingreso"
-                            ? "Ingreso"
-                            : "Egreso"}
-                        </span>
-                      </td>
-                      <td className="py-4 px-4">
-                        <div>
-                          <p className="font-medium">
-                            {transaction.description || transaction.category}
-                          </p>
-                          <p className="text-sm text-muted-foreground capitalize">
-                            {transaction.category.replace("_", " ")}
-                          </p>
-                        </div>
-                      </td>
-                      <td className="py-4 px-4 text-muted-foreground">
-                        {new Date(transaction.date).toLocaleDateString(
-                          "es-ES",
-                          {
-                            year: "numeric",
-                            month: "2-digit",
-                            day: "2-digit",
-                          }
-                        )}
-                      </td>
-                      <td className="py-4 px-4 text-right font-semibold">
-                        <span
-                          className={
-                            transaction.type === "ingreso"
-                              ? "text-green-600"
-                              : "text-red-600"
-                          }
-                        >
-                          {transaction.type === "ingreso" ? "+" : "-"}Bs.{" "}
-                          {transaction.amount.toFixed(2)}
-                        </span>
-                      </td>
+            <div className="space-y-3 sm:space-y-0">
+              {/* Vista móvil: Cards */}
+              <div className="block sm:hidden space-y-3">
+                {transactions.slice(0, 10).map((transaction) => (
+                  <Card key={transaction.id} className="p-3">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm truncate">
+                          {transaction.description || transaction.category}
+                        </p>
+                        <p className="text-xs text-muted-foreground capitalize mt-0.5">
+                          {transaction.category.replace("_", " ")}
+                        </p>
+                      </div>
+                      <span
+                        className={`font-semibold text-sm ml-2 ${
+                          transaction.type === "ingreso"
+                            ? "text-green-600"
+                            : "text-red-600"
+                        }`}
+                      >
+                        {transaction.type === "ingreso" ? "+" : "-"}Bs.{" "}
+                        {transaction.amount.toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span
+                        className={`font-medium ${
+                          transaction.type === "ingreso"
+                            ? "text-green-600"
+                            : "text-red-600"
+                        }`}
+                      >
+                        {transaction.type === "ingreso" ? "Ingreso" : "Egreso"}
+                      </span>
+                      <span className="text-muted-foreground">
+                        {new Date(transaction.date).toLocaleDateString("es-ES", {
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                        })}
+                      </span>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+
+              {/* Vista desktop: Tabla */}
+              <div className="hidden sm:block overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground text-sm">
+                        Tipo
+                      </th>
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground text-sm">
+                        Descripción
+                      </th>
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground text-sm">
+                        Fecha
+                      </th>
+                      <th className="text-right py-3 px-4 font-medium text-muted-foreground text-sm">
+                        Monto
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {transactions.slice(0, 10).map((transaction) => (
+                      <tr key={transaction.id} className="border-b last:border-0">
+                        <td className="py-4 px-4">
+                          <span
+                            className={`font-medium text-sm ${
+                              transaction.type === "ingreso"
+                                ? "text-green-600"
+                                : "text-red-600"
+                            }`}
+                          >
+                            {transaction.type === "ingreso"
+                              ? "Ingreso"
+                              : "Egreso"}
+                          </span>
+                        </td>
+                        <td className="py-4 px-4">
+                          <div>
+                            <p className="font-medium text-sm">
+                              {transaction.description || transaction.category}
+                            </p>
+                            <p className="text-xs text-muted-foreground capitalize">
+                              {transaction.category.replace("_", " ")}
+                            </p>
+                          </div>
+                        </td>
+                        <td className="py-4 px-4 text-muted-foreground text-sm">
+                          {new Date(transaction.date).toLocaleDateString(
+                            "es-ES",
+                            {
+                              year: "numeric",
+                              month: "2-digit",
+                              day: "2-digit",
+                            }
+                          )}
+                        </td>
+                        <td className="py-4 px-4 text-right font-semibold text-sm">
+                          <span
+                            className={
+                              transaction.type === "ingreso"
+                                ? "text-green-600"
+                                : "text-red-600"
+                            }
+                          >
+                            {transaction.type === "ingreso" ? "+" : "-"}Bs.{" "}
+                            {transaction.amount.toFixed(2)}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
               {transactions.length > 10 && (
                 <div className="mt-4 text-center">
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" className="w-full sm:w-auto">
                     Ver todas las transacciones
                   </Button>
                 </div>
@@ -833,12 +893,13 @@ const Business = () => {
 
       {/* Gráfico Ingresos vs Egresos */}
       <Card>
-        <CardHeader>
-          <CardTitle>Ingresos vs. Egresos</CardTitle>
-          <CardDescription>Últimos 6 meses</CardDescription>
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-lg sm:text-xl">Ingresos vs. Egresos</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">Últimos 6 meses</CardDescription>
         </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={400}>
+        <CardContent className="p-3 sm:p-6 pt-0">
+          <div className="w-full h-[300px] sm:h-[400px]">
+            <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={incomeVsExpenseData}
               margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -878,6 +939,7 @@ const Business = () => {
               />
             </BarChart>
           </ResponsiveContainer>
+          </div>
         </CardContent>
       </Card>
     </div>

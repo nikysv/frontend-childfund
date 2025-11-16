@@ -19,6 +19,7 @@ import Achievements from "./pages/Achievements";
 import CalendarView from "./pages/Calendar";
 import SoftSkills from "./pages/SoftSkills";
 import Profile from "./pages/Profile";
+import Certifications from "./pages/Certifications";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -46,6 +47,7 @@ const App = () => (
             <Route path="/community" element={<Community />} />
             <Route path="/courses" element={<Courses />} />
             <Route path="/achievements" element={<Achievements />} />
+            <Route path="/certifications" element={<Certifications />} />
             <Route path="/calendar" element={<CalendarView />} />
             <Route path="/soft-skills" element={<SoftSkills />} />
             <Route path="/profile" element={<Profile />} />

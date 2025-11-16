@@ -127,6 +127,20 @@ All colors MUST be HSL.
   }
 }
 
+/* Animaciones personalizadas para NFTs */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
 /* React Calendar Styles */
 .react-calendar {
   width: 100%;

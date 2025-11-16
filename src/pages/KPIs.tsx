@@ -260,31 +260,31 @@ const KPIs = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-pulse">Cargando KPIs...</div>
+      <div className="flex items-center justify-center p-6 sm:p-8 min-h-[400px]">
+        <div className="animate-pulse text-sm sm:text-base">Cargando KPIs...</div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-6 space-y-6">
+    <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-3xl font-bold">KPIs y Métricas</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold">KPIs y Métricas</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Indicadores clave de rendimiento de tu negocio
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-sm font-medium text-muted-foreground">
+          <label className="text-xs sm:text-sm font-medium text-muted-foreground whitespace-nowrap">
             Año:
           </label>
           <Select
             value={selectedYear.toString()}
             onValueChange={(value) => setSelectedYear(parseInt(value))}
           >
-            <SelectTrigger className="w-[120px]">
+            <SelectTrigger className="w-full sm:w-[120px] text-sm">
               <SelectValue placeholder="Seleccionar año" />
             </SelectTrigger>
             <SelectContent>
@@ -299,15 +299,15 @@ const KPIs = () => {
       </div>
 
       {/* KPIs Principales */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
         <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+          <CardHeader className="p-3 sm:p-6 pb-2">
+            <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
               Total Ventas
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">
+          <CardContent className="p-3 sm:p-6 pt-0">
+            <p className="text-xl sm:text-3xl font-bold">
               {kpis.totalVentas.toLocaleString("es-BO", {
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0,
@@ -317,13 +317,13 @@ const KPIs = () => {
         </Card>
 
         <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+          <CardHeader className="p-3 sm:p-6 pb-2">
+            <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
               Ventas del Año Anterior
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">
+          <CardContent className="p-3 sm:p-6 pt-0">
+            <p className="text-xl sm:text-3xl font-bold">
               {kpis.ventasAnoAnterior.toLocaleString("es-BO", {
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0,
@@ -333,14 +333,14 @@ const KPIs = () => {
         </Card>
 
         <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+          <CardHeader className="p-3 sm:p-6 pb-2">
+            <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
               Diferencia
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-3 sm:p-6 pt-0">
             <p
-              className={`text-3xl font-bold ${
+              className={`text-xl sm:text-3xl font-bold ${
                 kpis.diferencia >= 0 ? "text-green-600" : "text-red-600"
               }`}
             >
@@ -354,25 +354,25 @@ const KPIs = () => {
         </Card>
 
         <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+          <CardHeader className="p-3 sm:p-6 pb-2">
+            <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
               Variación de Ventas
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
+          <CardContent className="p-3 sm:p-6 pt-0">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               {kpis.variacion >= 0 ? (
-                <TrendingUp className="h-6 w-6 text-green-600" />
+                <TrendingUp className="h-4 w-4 sm:h-6 sm:w-6 text-green-600 flex-shrink-0" />
               ) : (
-                <TrendingDown className="h-6 w-6 text-red-600" />
+                <TrendingDown className="h-4 w-4 sm:h-6 sm:w-6 text-red-600 flex-shrink-0" />
               )}
               <p
-                className={`text-3xl font-bold ${
+                className={`text-xl sm:text-3xl font-bold ${
                   kpis.variacion >= 0 ? "text-green-600" : "text-red-600"
                 }`}
               >
                 {kpis.variacion >= 0 ? "+" : ""}
-                {kpis.variacion.toFixed(2)} %
+                {kpis.variacion.toFixed(2)}%
               </p>
             </div>
           </CardContent>
@@ -380,16 +380,17 @@ const KPIs = () => {
       </div>
 
       {/* Gráficos */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-6">
         {/* Gráfico de Líneas: Total Ventas vs Ventas del Año Anterior */}
         <Card>
-          <CardHeader>
-            <CardTitle>
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="text-base sm:text-lg">
               Total Ventas vs Ventas del Año Anterior por Mes
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
+          <CardContent className="p-3 sm:p-6 pt-0">
+            <div className="w-full h-[250px] sm:h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
               <LineChart data={monthlyData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                 <XAxis
@@ -423,18 +424,20 @@ const KPIs = () => {
                 />
               </LineChart>
             </ResponsiveContainer>
+            </div>
           </CardContent>
         </Card>
 
         {/* Gráfico de Barras: Diferencia por Trimestre */}
         <Card>
-          <CardHeader>
-            <CardTitle>
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="text-base sm:text-lg">
               Diferencia de Ventas por Trimestre (año anterior)
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
+          <CardContent className="p-3 sm:p-6 pt-0">
+            <div className="w-full h-[250px] sm:h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
               <BarChart data={quarterlyData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                 <XAxis
@@ -461,16 +464,18 @@ const KPIs = () => {
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
+            </div>
           </CardContent>
         </Card>
 
         {/* Gráfico de Barras: Variación Mensual */}
         <Card>
-          <CardHeader>
-            <CardTitle>Variación de Ventas por Mes del Año Anterior</CardTitle>
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="text-base sm:text-lg">Variación de Ventas por Mes del Año Anterior</CardTitle>
           </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
+          <CardContent className="p-3 sm:p-6 pt-0">
+            <div className="w-full h-[250px] sm:h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
               <BarChart data={monthlyVariation}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                 <XAxis
@@ -498,18 +503,20 @@ const KPIs = () => {
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
+            </div>
           </CardContent>
         </Card>
 
         {/* Gráfico de Barras: Diferencia por Semestre */}
         <Card>
-          <CardHeader>
-            <CardTitle>
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="text-base sm:text-lg">
               Diferencia de Ventas por Semestre (año anterior)
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
+          <CardContent className="p-3 sm:p-6 pt-0">
+            <div className="w-full h-[250px] sm:h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
               <BarChart data={semesterData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                 <XAxis
@@ -536,6 +543,7 @@ const KPIs = () => {
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
+            </div>
           </CardContent>
         </Card>
       </div>

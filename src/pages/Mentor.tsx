@@ -15,6 +15,7 @@ import {
   Video,
   MoreVertical,
   CheckCheck,
+  ArrowLeft,
 } from "lucide-react";
 
 interface Message {
@@ -43,6 +44,7 @@ const Mentor = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [showChatList, setShowChatList] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -53,6 +55,10 @@ const Mentor = () => {
   useEffect(() => {
     if (selectedChat) {
       loadMessages(selectedChat.id);
+      // En móvil, ocultar la lista de chats cuando se selecciona un chat
+      if (window.innerWidth < 640) {
+        setShowChatList(false);
+      }
     }
   }, [selectedChat]);
 
@@ -82,7 +88,6 @@ const Mentor = () => {
         unreadCount: 2,
         isActive: true,
       },
-    
     ];
 
     setChats(mockChats);
@@ -214,20 +219,26 @@ const Mentor = () => {
   );
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="h-[calc(100vh-12rem)] flex gap-0 border rounded-lg overflow-hidden shadow-sm">
+    <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-6">
+      <div className="h-[calc(100vh-8rem)] sm:h-[calc(100vh-12rem)] flex gap-0 border rounded-lg overflow-hidden shadow-sm">
         {/* Sidebar - Lista de Chats */}
-        <div className="w-80 border-r bg-background flex flex-col">
+        <div
+          className={`${
+            showChatList ? "flex" : "hidden"
+          } sm:flex w-full sm:w-80 border-r bg-background flex-col absolute sm:relative z-10 sm:z-auto h-full`}
+        >
           {/* Header */}
-          <div className="p-4 border-b">
-            <h2 className="text-xl font-bold mb-3">Mensajes</h2>
+          <div className="p-3 sm:p-4 border-b">
+            <h2 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3">
+              Mensajes
+            </h2>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Buscar mentor..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-9 sm:pl-10 h-9 sm:h-10 text-sm"
               />
             </div>
           </div>
@@ -238,34 +249,39 @@ const Mentor = () => {
               {filteredChats.map((chat) => (
                 <div
                   key={chat.id}
-                  className={`p-4 cursor-pointer hover:bg-muted/50 transition-colors ${
+                  className={`p-3 sm:p-4 cursor-pointer hover:bg-muted/50 transition-colors active:bg-muted ${
                     selectedChat?.id === chat.id ? "bg-muted" : ""
                   }`}
-                  onClick={() => setSelectedChat(chat)}
+                  onClick={() => {
+                    setSelectedChat(chat);
+                    if (window.innerWidth < 640) {
+                      setShowChatList(false);
+                    }
+                  }}
                 >
-                  <div className="flex items-start gap-3">
-                    <div className="relative">
-                      <Avatar className="h-12 w-12">
+                  <div className="flex items-start gap-2 sm:gap-3">
+                    <div className="relative flex-shrink-0">
+                      <Avatar className="h-10 w-10 sm:h-12 sm:w-12">
                         <AvatarImage src={chat.mentorAvatar} />
                         <AvatarFallback>
                           {chat.mentorName.charAt(0)}
                         </AvatarFallback>
                       </Avatar>
                       {chat.isActive && (
-                        <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-background rounded-full" />
+                        <span className="absolute bottom-0 right-0 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-500 border-2 border-background rounded-full" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <h3 className="font-semibold truncate">
+                      <div className="flex items-center justify-between mb-0.5 sm:mb-1">
+                        <h3 className="font-semibold text-sm sm:text-base truncate">
                           {chat.mentorName}
                         </h3>
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">
                           {formatTime(chat.lastMessageTime)}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm text-muted-foreground truncate">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-xs sm:text-sm text-muted-foreground truncate">
                           {chat.lastMessage}
                         </p>
                         {chat.unreadCount > 0 && (
@@ -286,37 +302,63 @@ const Mentor = () => {
         {selectedChat ? (
           <div className="flex-1 flex flex-col bg-muted/20">
             {/* Chat Header */}
-            <div className="p-4 border-b bg-background flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Avatar className="h-10 w-10">
+            <div className="p-3 sm:p-4 border-b bg-background flex items-center justify-between">
+              <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                {/* Botón volver en móvil */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="sm:hidden flex-shrink-0"
+                  onClick={() => {
+                    setShowChatList(true);
+                    setSelectedChat(null);
+                  }}
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </Button>
+                <Avatar className="h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0">
                   <AvatarImage src={selectedChat.mentorAvatar} />
                   <AvatarFallback>
                     {selectedChat.mentorName.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
-                <div>
-                  <h3 className="font-semibold">{selectedChat.mentorName}</h3>
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-semibold text-sm sm:text-base truncate">
+                    {selectedChat.mentorName}
+                  </h3>
                   <p className="text-xs text-muted-foreground">
                     {selectedChat.isActive ? "En línea" : "Desconectado"}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon">
-                  <Phone className="h-5 w-5" />
+              <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 sm:h-10 sm:w-10"
+                >
+                  <Phone className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
-                <Button variant="ghost" size="icon">
-                  <Video className="h-5 w-5" />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 sm:h-10 sm:w-10"
+                >
+                  <Video className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
-                <Button variant="ghost" size="icon">
-                  <MoreVertical className="h-5 w-5" />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 sm:h-10 sm:w-10 hidden sm:flex"
+                >
+                  <MoreVertical className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
               </div>
             </div>
 
             {/* Messages Area */}
-            <ScrollArea className="flex-1 p-4">
-              <div className="space-y-4">
+            <ScrollArea className="flex-1 p-2 sm:p-4">
+              <div className="space-y-3 sm:space-y-4">
                 {messages.map((message) => (
                   <div
                     key={message.id}
@@ -327,20 +369,22 @@ const Mentor = () => {
                     }`}
                   >
                     <div
-                      className={`max-w-[70%] rounded-lg p-3 ${
+                      className={`max-w-[85%] sm:max-w-[70%] rounded-lg p-2.5 sm:p-3 ${
                         message.sender === "user"
                           ? "bg-primary text-primary-foreground"
                           : "bg-background border"
                       }`}
                     >
-                      <p className="text-sm">{message.text}</p>
+                      <p className="text-xs sm:text-sm break-words">
+                        {message.text}
+                      </p>
                       <div className="flex items-center justify-end gap-1 mt-1">
                         <span className="text-xs opacity-70">
                           {formatMessageTime(message.timestamp)}
                         </span>
                         {message.sender === "user" && (
                           <CheckCheck
-                            className={`h-3 w-3 ${
+                            className={`h-3 w-3 flex-shrink-0 ${
                               message.read ? "text-blue-400" : "opacity-70"
                             }`}
                           />
@@ -354,10 +398,14 @@ const Mentor = () => {
             </ScrollArea>
 
             {/* Input Area */}
-            <div className="p-4 border-t bg-background">
-              <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon">
-                  <Paperclip className="h-5 w-5" />
+            <div className="p-2 sm:p-4 border-t bg-background">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0"
+                >
+                  <Paperclip className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
                 <Input
                   placeholder="Escribe un mensaje..."
@@ -368,22 +416,25 @@ const Mentor = () => {
                       handleSendMessage();
                     }
                   }}
-                  className="flex-1"
+                  className="flex-1 h-9 sm:h-10 text-sm sm:text-base"
                 />
                 <Button
                   onClick={handleSendMessage}
                   disabled={!newMessage.trim()}
                   size="icon"
+                  className="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0"
                 >
-                  <Send className="h-5 w-5" />
+                  <Send className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
               </div>
             </div>
           </div>
         ) : (
-          <div className="flex-1 flex items-center justify-center bg-muted/20">
+          <div className="flex-1 items-center justify-center bg-muted/20 hidden sm:flex">
             <div className="text-center text-muted-foreground">
-              <p>Selecciona un chat para comenzar</p>
+              <p className="text-sm sm:text-base">
+                Selecciona un chat para comenzar
+              </p>
             </div>
           </div>
         )}
