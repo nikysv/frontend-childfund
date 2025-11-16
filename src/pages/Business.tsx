@@ -235,6 +235,27 @@ const Business = () => {
 
       setSalesData(processedData);
 
+      // ===== Petición SEPARADA para el gráfico de Ingresos vs Egresos (últimos 6 meses) =====
+      // Esta petición NO debe estar afectada por el filtro de mes seleccionado
+      const sixMonthsAgo = new Date(now);
+      sixMonthsAgo.setMonth(now.getMonth() - 5); // -5 porque incluye el mes actual (6 meses total)
+      sixMonthsAgo.setDate(1); // Primer día del mes
+      sixMonthsAgo.setHours(0, 0, 0, 0);
+
+      // Petición independiente para los últimos 6 meses
+      const incomeExpenseResponse = await fetch(
+        `${API_URL}/api/finance/transactions?user_id=${userId}&start_date=${sixMonthsAgo.toISOString()}&end_date=${now.toISOString()}`
+      );
+
+      if (!incomeExpenseResponse.ok) {
+        throw new Error(
+          "Error al obtener transacciones de los últimos 6 meses"
+        );
+      }
+
+      const incomeExpenseData = await incomeExpenseResponse.json();
+      const allTransactions6Months = incomeExpenseData.data || [];
+
       // Procesar datos para Income vs Expense (últimos 6 meses)
       const currentDate = new Date();
       const last6Months = [];
@@ -268,8 +289,9 @@ const Business = () => {
         });
       }
 
-      // Sumar ingresos y egresos por mes
-      fetchedTransactions.forEach((t: any) => {
+      // Sumar ingresos y egresos por mes usando TODAS las transacciones de los últimos 6 meses
+      // IMPORTANTE: Usar allTransactions6Months, NO fetchedTransactions
+      allTransactions6Months.forEach((t: any) => {
         const tDate = new Date(t.date);
         const monthData = last6Months.find(
           (m) =>
@@ -383,7 +405,9 @@ const Business = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-6 sm:p-8 min-h-[400px]">
-        <div className="animate-pulse text-sm sm:text-base">Cargando datos financieros...</div>
+        <div className="animate-pulse text-sm sm:text-base">
+          Cargando datos financieros...
+        </div>
       </div>
     );
   }
@@ -408,7 +432,9 @@ const Business = () => {
           </DialogTrigger>
           <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="text-lg sm:text-xl">Registrar Transacción</DialogTitle>
+              <DialogTitle className="text-lg sm:text-xl">
+                Registrar Transacción
+              </DialogTitle>
               <DialogDescription className="text-xs sm:text-sm">
                 Registra tus ingresos y egresos para llevar control de tu
                 negocio
@@ -547,14 +573,14 @@ const Business = () => {
               </div>
             </div>
             <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => setIsDialogOpen(false)}
                 className="w-full sm:w-auto"
               >
                 Cancelar
               </Button>
-              <Button 
+              <Button
                 onClick={handleSubmitTransaction}
                 className="w-full sm:w-auto"
               >
@@ -586,7 +612,9 @@ const Business = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-6">
-            <CardTitle className="text-xs sm:text-sm font-medium">Crecimiento</CardTitle>
+            <CardTitle className="text-xs sm:text-sm font-medium">
+              Crecimiento
+            </CardTitle>
             {crecimiento >= 0 ? (
               <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-green-600" />
             ) : (
@@ -602,7 +630,9 @@ const Business = () => {
               {crecimiento >= 0 ? "+" : ""}
               {crecimiento.toFixed(1)}%
             </div>
-            <p className="text-xs text-muted-foreground mt-1">vs. año anterior</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              vs. año anterior
+            </p>
           </CardContent>
         </Card>
 
@@ -623,7 +653,9 @@ const Business = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-6">
-            <CardTitle className="text-xs sm:text-sm font-medium">Año Anterior</CardTitle>
+            <CardTitle className="text-xs sm:text-sm font-medium">
+              Año Anterior
+            </CardTitle>
             <ArrowDownRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent className="p-3 sm:p-6 pt-0">
@@ -679,8 +711,18 @@ const Business = () => {
                 className="w-full sm:w-auto"
               >
                 <TabsList className="w-full sm:w-auto">
-                  <TabsTrigger value="week" className="flex-1 sm:flex-none text-xs sm:text-sm">Semana</TabsTrigger>
-                  <TabsTrigger value="month" className="flex-1 sm:flex-none text-xs sm:text-sm">Mes</TabsTrigger>
+                  <TabsTrigger
+                    value="week"
+                    className="flex-1 sm:flex-none text-xs sm:text-sm"
+                  >
+                    Semana
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="month"
+                    className="flex-1 sm:flex-none text-xs sm:text-sm"
+                  >
+                    Mes
+                  </TabsTrigger>
                 </TabsList>
               </Tabs>
             </div>
@@ -689,56 +731,62 @@ const Business = () => {
         <CardContent className="p-3 sm:p-6">
           <div className="w-full h-[300px] sm:h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
-            <AreaChart
-              data={salesData}
-              margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-            >
-              <defs>
-                <linearGradient id="colorActual" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#f97316" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="colorAnterior" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#94a3b8" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#94a3b8" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-              <XAxis
-                dataKey="name"
-                stroke="#94a3b8"
-                tick={{ fill: "#94a3b8" }}
-              />
-              <YAxis stroke="#94a3b8" tick={{ fill: "#94a3b8" }} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "#1e293b",
-                  border: "1px solid #334155",
-                  borderRadius: "8px",
-                }}
-                labelStyle={{ color: "#f1f5f9" }}
-              />
-              <Legend />
-              <Area
-                type="monotone"
-                dataKey="ventasActuales"
-                stroke="#f97316"
-                strokeWidth={3}
-                fillOpacity={1}
-                fill="url(#colorActual)"
-                name="Total ventas"
-              />
-              <Area
-                type="monotone"
-                dataKey="ventasAñoAnterior"
-                stroke="#94a3b8"
-                strokeWidth={3}
-                fillOpacity={1}
-                fill="url(#colorAnterior)"
-                name="Ventas del año anterior"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+              <AreaChart
+                data={salesData}
+                margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+              >
+                <defs>
+                  <linearGradient id="colorActual" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#f97316" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient
+                    id="colorAnterior"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop offset="5%" stopColor="#94a3b8" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#94a3b8" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                <XAxis
+                  dataKey="name"
+                  stroke="#94a3b8"
+                  tick={{ fill: "#94a3b8" }}
+                />
+                <YAxis stroke="#94a3b8" tick={{ fill: "#94a3b8" }} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#1e293b",
+                    border: "1px solid #334155",
+                    borderRadius: "8px",
+                  }}
+                  labelStyle={{ color: "#f1f5f9" }}
+                />
+                <Legend />
+                <Area
+                  type="monotone"
+                  dataKey="ventasActuales"
+                  stroke="#f97316"
+                  strokeWidth={3}
+                  fillOpacity={1}
+                  fill="url(#colorActual)"
+                  name="Total ventas"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="ventasAñoAnterior"
+                  stroke="#94a3b8"
+                  strokeWidth={3}
+                  fillOpacity={1}
+                  fill="url(#colorAnterior)"
+                  name="Ventas del año anterior"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
         </CardContent>
       </Card>
@@ -746,7 +794,9 @@ const Business = () => {
       {/* Tabla de Transacciones Recientes */}
       <Card>
         <CardHeader className="p-4 sm:p-6">
-          <CardTitle className="text-lg sm:text-xl">Transacciones Recientes</CardTitle>
+          <CardTitle className="text-lg sm:text-xl">
+            Transacciones Recientes
+          </CardTitle>
           <CardDescription className="text-xs sm:text-sm">
             Historial de tus últimas transacciones
           </CardDescription>
@@ -754,7 +804,9 @@ const Business = () => {
         <CardContent className="p-3 sm:p-6 pt-0">
           {transactions.length === 0 ? (
             <div className="text-center py-6 sm:py-8 text-muted-foreground">
-              <p className="text-sm sm:text-base">No hay transacciones registradas</p>
+              <p className="text-sm sm:text-base">
+                No hay transacciones registradas
+              </p>
               <p className="text-xs sm:text-sm mt-2">
                 Comienza registrando tu primera transacción
               </p>
@@ -796,11 +848,14 @@ const Business = () => {
                         {transaction.type === "ingreso" ? "Ingreso" : "Egreso"}
                       </span>
                       <span className="text-muted-foreground">
-                        {new Date(transaction.date).toLocaleDateString("es-ES", {
-                          year: "numeric",
-                          month: "2-digit",
-                          day: "2-digit",
-                        })}
+                        {new Date(transaction.date).toLocaleDateString(
+                          "es-ES",
+                          {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                          }
+                        )}
                       </span>
                     </div>
                   </Card>
@@ -828,7 +883,10 @@ const Business = () => {
                   </thead>
                   <tbody>
                     {transactions.slice(0, 10).map((transaction) => (
-                      <tr key={transaction.id} className="border-b last:border-0">
+                      <tr
+                        key={transaction.id}
+                        className="border-b last:border-0"
+                      >
                         <td className="py-4 px-4">
                           <span
                             className={`font-medium text-sm ${
@@ -881,7 +939,11 @@ const Business = () => {
               </div>
               {transactions.length > 10 && (
                 <div className="mt-4 text-center">
-                  <Button variant="outline" size="sm" className="w-full sm:w-auto">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full sm:w-auto"
+                  >
                     Ver todas las transacciones
                   </Button>
                 </div>
@@ -894,51 +956,55 @@ const Business = () => {
       {/* Gráfico Ingresos vs Egresos */}
       <Card>
         <CardHeader className="p-4 sm:p-6">
-          <CardTitle className="text-lg sm:text-xl">Ingresos vs. Egresos</CardTitle>
-          <CardDescription className="text-xs sm:text-sm">Últimos 6 meses</CardDescription>
+          <CardTitle className="text-lg sm:text-xl">
+            Ingresos vs. Egresos
+          </CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
+            Últimos 6 meses
+          </CardDescription>
         </CardHeader>
         <CardContent className="p-3 sm:p-6 pt-0">
           <div className="w-full h-[300px] sm:h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={incomeVsExpenseData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-              <XAxis
-                dataKey="month"
-                stroke="#94a3b8"
-                tick={{ fill: "#94a3b8" }}
-              />
-              <YAxis
-                stroke="#94a3b8"
-                tick={{ fill: "#94a3b8" }}
-                tickFormatter={(value) => `Bs.${(value / 1000).toFixed(1)}k`}
-              />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "#1e293b",
-                  border: "1px solid #334155",
-                  borderRadius: "8px",
-                }}
-                labelStyle={{ color: "#f1f5f9" }}
-                formatter={(value: any) => [`Bs. ${value.toFixed(2)}`, ""]}
-              />
-              <Legend />
-              <Bar
-                dataKey="Income"
-                fill="#10b981"
-                radius={[8, 8, 0, 0]}
-                name="Ingresos"
-              />
-              <Bar
-                dataKey="Expense"
-                fill="#ef4444"
-                radius={[8, 8, 0, 0]}
-                name="Egresos"
-              />
-            </BarChart>
-          </ResponsiveContainer>
+              <BarChart
+                data={incomeVsExpenseData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                <XAxis
+                  dataKey="month"
+                  stroke="#94a3b8"
+                  tick={{ fill: "#94a3b8" }}
+                />
+                <YAxis
+                  stroke="#94a3b8"
+                  tick={{ fill: "#94a3b8" }}
+                  tickFormatter={(value) => `Bs.${(value / 1000).toFixed(1)}k`}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#1e293b",
+                    border: "1px solid #334155",
+                    borderRadius: "8px",
+                  }}
+                  labelStyle={{ color: "#f1f5f9" }}
+                  formatter={(value: any) => [`Bs. ${value.toFixed(2)}`, ""]}
+                />
+                <Legend />
+                <Bar
+                  dataKey="Income"
+                  fill="#10b981"
+                  radius={[8, 8, 0, 0]}
+                  name="Ingresos"
+                />
+                <Bar
+                  dataKey="Expense"
+                  fill="#ef4444"
+                  radius={[8, 8, 0, 0]}
+                  name="Egresos"
+                />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </CardContent>
       </Card>
