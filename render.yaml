@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: emprende-voz-frontend
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run preview
+    envVars:
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_PUBLISHABLE_KEY
+        sync: false
+      - key: VITE_API_URL
+        sync: false
+    staticPublishPath: ./dist
+
