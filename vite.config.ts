@@ -40,5 +40,6 @@ export default defineConfig(({ mode }) => ({
   preview: {
     port: 4173,
     host: true,
+    allowedHosts: ["frontend-childfund.onrender.com"],
   },
 }));
